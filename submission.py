@@ -23,7 +23,10 @@ def extractWordFeatures(x: str) -> FeatureVector:
     Example: "I am what I am" --> {'I': 2, 'am': 2, 'what': 1}
     """
     # BEGIN_YOUR_CODE (our solution is 4 lines of code, but don't worry if you deviate from this)
-    raise Exception("Not implemented yet")
+    d = defaultdict(int)  # When the int class is passed as the argument, a defaultdict is created with default value as zero.
+    for word in x.strip().split(' '):
+        d[word] += 1  # With defaultdict, no need to enter the key first
+    return d
     # END_YOUR_CODE
 
 
@@ -47,7 +50,21 @@ def learnPredictor(trainExamples: List[Tuple[Any, int]], validationExamples: Lis
     weights = {}  # the weight vector
 
     # BEGIN_YOUR_CODE (our solution is 12 lines of code, but don't worry if you deviate from this)
-    raise Exception("Not implemented yet")
+    # w_1 = w_0 - alpha * dL_dw_0 = w_0 - alpha*(h_1 - y_1) * FeatureVector_1
+    #     = w_0 - alpha * (1 / (1+e^(-k)) - y_1) * FeatureVector_1
+    # where k = w_0*FeatureVector_1
+    #       scale =  - alpha * (1 / (1+e^(-k)) - y_1) = - alpha * (e^(k) / e^(k) +1) - y_1)
+    trainExamples_updated = []
+    for example in trainExamples:
+        trainExamples_updated.append((example[0], 0 if example[1] == -1 else 1))
+
+    for epoch in range(numEpochs):
+        for example in trainExamples_updated:
+            featureVector = featureExtractor(example[0])
+            y = example[1]
+            k = dotProduct(weights, featureVector)
+            scale = -1 * alpha * ( (math.exp(k) / (math.exp(k) + 1) ) - y)
+            increment(weights, scale, featureVector)
     # END_YOUR_CODE
     return weights
 

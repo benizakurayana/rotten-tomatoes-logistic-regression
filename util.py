@@ -12,7 +12,8 @@ def increment(d1, scale, d2):
     @param dict d2: a feature vector.
     """
     # BEGIN_YOUR_CODE (our solution is 2 lines of code, but don't worry if you deviate from this)
-    raise Exception("Not implemented yet")
+    for word in d2:
+        d1[word] = d1.get(word, 0) + scale * d2[word]
     # END_YOUR_CODE
 
 
@@ -29,7 +30,7 @@ def dotProduct(d1, d2):
         return dotProduct(d2, d1)
     else:
         # BEGIN_YOUR_CODE (our solution is 1 line of code, but don't worry if you deviate from this)
-        raise Exception("Not implemented yet")
+        return sum(d1[word] * d2.get(word, 0) for word in d1)
         # END_YOUR_CODE
 
 
