@@ -30,7 +30,7 @@ def dotProduct(d1, d2):
         return dotProduct(d2, d1)
     else:
         # BEGIN_YOUR_CODE (our solution is 1 line of code, but don't worry if you deviate from this)
-        return sum(d1[word] * d2.get(word, 0) for word in d1)
+        return sum(d1.get(word, 0) * d2[word] for word in d2)
         # END_YOUR_CODE
 
 

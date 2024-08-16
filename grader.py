@@ -1,8 +1,8 @@
 """
 File: grader.py
 -----------------------------
-Milestone 4 answer: TODO:
-
+Milestone 4 answer: With the increasing numEpoch, the training error consistently decreases.
+However, the validation error initially decreases slightly but then starts to increase or remains relatively constant.
 """
 
 
