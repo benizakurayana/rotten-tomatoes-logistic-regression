@@ -3,6 +3,7 @@ File: grader.py
 -----------------------------
 Milestone 4 answer: With the increasing numEpoch, the training error consistently decreases.
 However, the validation error initially decreases slightly but then starts to increase or remains relatively constant.
+A too high numEpoch can result in overfitting, where the model performs very well on the training data but poorly on unseen examples.
 """
 
 
@@ -93,9 +94,11 @@ grader.add_basic_part('4a-2', test4a2, max_points=30, max_seconds=45, descriptio
 
 ############################################################
 # Milestone 5: Finishing up
-# TODO: Is there any difference between using extractCharacterFeatures and extractWordFeatures? Why?
-# TODO: Your answer here
-# TODO: ______________________________________________________________________________________
+# Is there any difference between using extractCharacterFeatures and extractWordFeatures? Why?
+# Answer: When using extractCharacterFeatures, The training error sharply decreases to zero,
+# while the validation error remains relatively constant.
+# This is extremely overfitting because the model is memorizing the training data with specific word orders and combinations.
+# On the other hand, using extractWordFeatures is relatively better as it learns the training data by words, making it more generalized.
 ############################################################
 
 ### 5a

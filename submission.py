@@ -54,17 +54,19 @@ def learnPredictor(trainExamples: List[Tuple[Any, int]], validationExamples: Lis
     #     = w_0 - alpha * (1 / (1+e^(-k)) - y_1) * FeatureVector_1
     # where k = w_0*FeatureVector_1
     #       scale =  - alpha * (1 / (1+e^(-k)) - y_1) = - alpha * (e^(k) / e^(k) +1) - y_1)
-    trainExamples_updated = []
-    for example in trainExamples:
-        trainExamples_updated.append((example[0], 0 if example[1] == -1 else 1))
-
+    trainExamples_updated = [(example[0], 0 if example[1] == -1 else 1) for example in trainExamples]
+    validationExamples_updated = [(example[0], 0 if example[1] == -1 else 1) for example in validationExamples]
     for epoch in range(numEpochs):
         for example in trainExamples_updated:
             featureVector = featureExtractor(example[0])
-            y = example[1]
-            k = dotProduct(weights, featureVector)
-            scale = -1 * alpha * ( (math.exp(k) / (math.exp(k) + 1) ) - y)
+            scale = -1 * alpha * ( (math.exp(dotProduct(weights, featureVector)) / (math.exp(dotProduct(weights, featureVector)) + 1) ) - example[1])
             increment(weights, scale, featureVector)
+
+        def predictor(x):
+            return 1 if math.exp(dotProduct(weights, featureExtractor(x))) / (math.exp(dotProduct(weights, featureExtractor(x))) + 1) >= 0.5 else 0
+        training_error = evaluatePredictor(trainExamples_updated, predictor)
+        validation_error = evaluatePredictor(validationExamples_updated, predictor)
+        print(f'Training Error: ({epoch}epoch): {training_error}\nValidation Error: ({epoch}epoch):{validation_error}')
     # END_YOUR_CODE
     return weights
 
@@ -88,7 +90,11 @@ def generateDataset(numExamples: int, weights: WeightVector) -> List[Example]:
         Note that the weight vector can be arbitrary during testing.
         """
         # BEGIN_YOUR_CODE (our solution is 4 lines of code, but don't worry if you deviate from this)
-        raise Exception("Not implemented yet")
+        phi = defaultdict(int)
+        for i in range(random.randint(1, len(weights))):
+            random_word = random.choice(list(weights.keys()))
+            phi[random_word] += 1
+        y = 1 if dotProduct(weights, phi) >= 0 else -1
         # END_YOUR_CODE
         return phi, y
 
@@ -108,7 +114,11 @@ def extractCharacterFeatures(n: int) -> Callable[[str], FeatureVector]:
 
     def extract(x: str) -> Dict[str, int]:
         # BEGIN_YOUR_CODE (our solution is 5 lines of code, but don't worry if you deviate from this)
-        raise Exception("Not implemented yet")
+        d = defaultdict(int)
+        x_without_space = x.replace(' ', '')
+        for i in range(len(x_without_space) - n + 1):
+            d[x_without_space[i:i+n]] += 1
+        return d
         # END_YOUR_CODE
 
     return extract
