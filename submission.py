@@ -53,17 +53,20 @@ def learnPredictor(trainExamples: List[Tuple[Any, int]], validationExamples: Lis
     # w_1 = w_0 - alpha * dL_dw_0 = w_0 - alpha*(h_1 - y_1) * FeatureVector_1
     #     = w_0 - alpha * (1 / (1+e^(-k)) - y_1) * FeatureVector_1
     # where k = w_0*FeatureVector_1
-    #       scale =  - alpha * (1 / (1+e^(-k)) - y_1) = - alpha * (e^(k) / e^(k) +1) - y_1)
+    #       scale =  - alpha * (1 / (1+e^(-k)) - y_1)
     trainExamples_updated = [(example[0], 0 if example[1] == -1 else 1) for example in trainExamples]
     validationExamples_updated = [(example[0], 0 if example[1] == -1 else 1) for example in validationExamples]
     for epoch in range(numEpochs):
         for example in trainExamples_updated:
             featureVector = featureExtractor(example[0])
-            scale = -1 * alpha * ( (math.exp(dotProduct(weights, featureVector)) / (math.exp(dotProduct(weights, featureVector)) + 1) ) - example[1])
+
+            def sigmoid(k):
+                return 1 / (1 + math.exp(-k))
+            scale = -1 * alpha * (sigmoid(dotProduct(weights, featureVector)) - example[1])
             increment(weights, scale, featureVector)
 
         def predictor(x):
-            return 1 if math.exp(dotProduct(weights, featureExtractor(x))) / (math.exp(dotProduct(weights, featureExtractor(x))) + 1) >= 0.5 else 0
+            return 1 if dotProduct(weights, featureExtractor(x)) >= 0 else 0
         training_error = evaluatePredictor(trainExamples_updated, predictor)
         validation_error = evaluatePredictor(validationExamples_updated, predictor)
         print(f'Training Error: ({epoch}epoch): {training_error}\nValidation Error: ({epoch}epoch):{validation_error}')
